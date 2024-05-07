@@ -6,9 +6,13 @@ POST http://localhost:9129/update?app=app1&env=dev&ns=public
 Content-Type: application/json
 
 {
-  "key": "key2",
-  "value": "value3"
+  "af.a": "dev500",
+  "af.b": "dev500",
+  "af.e": "dev500"
 }
 
 ### version
 GET http://localhost:9129/version?app=app1&env=dev&ns=public
+
+### demo 8080
+GET http://localhost:8080/demo
