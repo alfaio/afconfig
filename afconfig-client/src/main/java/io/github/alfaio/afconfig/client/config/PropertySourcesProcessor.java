@@ -11,11 +11,9 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * af property source processor
+ *
  * @author LimMF
  * @since 2024/5/7
  **/
@@ -28,20 +26,21 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        ConfigurableEnvironment env = (ConfigurableEnvironment) environment;
-        if (env.getPropertySources().contains(AF_PROPERTY_SOURCES)) {
+        ConfigurableEnvironment ENV = (ConfigurableEnvironment) environment;
+        if (ENV.getPropertySources().contains(AF_PROPERTY_SOURCES)) {
             return;
         }
-        // 通过http，从config-server获取配置 todo
-        Map<String, String> config = new HashMap<>();
-        config.put("af.a", "dev100");
-        config.put("af.b", "dev300");
-        config.put("af.c", "dev500");
-        AFConfigService configService = new AFConfigServiceImpl(config);
+        // 通过http，从config-server获取配置
+        String app = ENV.getProperty("afconfig.app", "app1");
+        String env = ENV.getProperty("afconfig.env", "dev");
+        String ns = ENV.getProperty("afconfig.ns", "public");
+        String server = ENV.getProperty("afconfig.server", "http://localhost:9129");
+
+        AFConfigService configService = AFConfigService.getDefault(new ConfigMeta(app, env, ns, server));
         AFPropertySource propertySource = new AFPropertySource(AF_PROPERTY_SOURCE, configService);
         CompositePropertySource compositePropertySource = new CompositePropertySource(AF_PROPERTY_SOURCES);
         compositePropertySource.addPropertySource(propertySource);
-        env.getPropertySources().addFirst(compositePropertySource);
+        ENV.getPropertySources().addFirst(compositePropertySource);
     }
 
     @Override

@@ -6,3 +6,8 @@ af:
   a: a00
   b: b00
   c: c00
+
+logging:
+  level:
+    root: info
+    cn.kimmking: debug
