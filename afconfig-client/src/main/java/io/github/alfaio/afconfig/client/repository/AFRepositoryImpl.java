@@ -4,6 +4,7 @@ import cn.kimmking.utils.HttpUtils;
 import com.alibaba.fastjson.TypeReference;
 import io.github.alfaio.afconfig.client.config.ConfigMeta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,16 @@ public class AFRepositoryImpl implements AFRepository {
     Map<String, Long> versionMap = new HashMap<>();
     Map<String, Map<String, String>> configMap = new HashMap<>();
     ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    List<ChangeListener> listeners = new ArrayList<>();
 
     public AFRepositoryImpl(ConfigMeta meta) {
         this.meta = meta;
         executor.scheduleWithFixedDelay(this::watch, 1000, 5000, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void addListener(ChangeListener listener) {
+        listeners.add(listener);
     }
 
     @Override
@@ -57,7 +64,9 @@ public class AFRepositoryImpl implements AFRepository {
             System.out.println("[AFCONFIG] current = " + version + ", old = " + oldVersion);
             System.out.println("[AFCONFIG] config changed");
             versionMap.put(key, version);
-            configMap.put(key, findAll());
+            Map<String, String> newConfigs = findAll();
+            configMap.put(key, newConfigs);
+            listeners.forEach(listener -> listener.onChange(new ChangeEvent(meta, newConfigs)));
         }
     }
 }

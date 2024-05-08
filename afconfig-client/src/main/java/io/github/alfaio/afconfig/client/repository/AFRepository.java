@@ -15,4 +15,12 @@ public interface AFRepository {
     }
 
     Map<String, String> getConfig();
-}
+
+    void addListener(ChangeListener listener);
+
+    interface ChangeListener {
+        void onChange(ChangeEvent event);
+    }
+
+    record ChangeEvent(ConfigMeta meta, Map<String, String> config) {}
+ }
