@@ -1,5 +1,6 @@
 package io.github.alfaio.afconfig.client.config;
 
+import io.github.alfaio.afconfig.client.value.SpringValueProcessor;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -16,12 +17,17 @@ public class AFConfigRegister implements ImportBeanDefinitionRegistrar {
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 //        ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);
-        System.out.println("register PropertySourcesProcessor");
-        AbstractBeanDefinition beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(PropertySourcesProcessor.class).getBeanDefinition();
-        if (Arrays.stream(registry.getBeanDefinitionNames()).anyMatch(beanName -> beanName.equals(PropertySourcesProcessor.class.getName()))) {
-            System.out.println("PropertySourcesProcessor already registered");
+        registerClass(registry, PropertySourcesProcessor.class);
+        registerClass(registry, SpringValueProcessor.class);
+    }
+
+    private static void registerClass(BeanDefinitionRegistry registry, Class<?> clazz) {
+        System.out.println("register " + clazz.getName());
+        AbstractBeanDefinition beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(clazz).getBeanDefinition();
+        if (Arrays.stream(registry.getBeanDefinitionNames()).anyMatch(beanName -> beanName.equals(clazz.getName()))) {
+            System.out.println(clazz.getName() + " already registered");
             return;
         }
-        registry.registerBeanDefinition(PropertySourcesProcessor.class.getName(), beanDefinition);
+        registry.registerBeanDefinition(clazz.getName(), beanDefinition);
     }
 }
