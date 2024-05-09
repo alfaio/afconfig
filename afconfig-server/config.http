@@ -6,7 +6,7 @@ POST http://localhost:9129/update?app=app1&env=dev&ns=public
 Content-Type: application/json
 
 {
-  "af.a": "dev500",
+  "af.a": "dev600",
   "af.b": "dev500",
   "af.e": "dev500"
 }

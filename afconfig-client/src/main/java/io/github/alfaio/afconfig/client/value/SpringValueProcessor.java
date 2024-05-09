@@ -48,6 +48,7 @@ public class SpringValueProcessor implements BeanPostProcessor, BeanFactoryAware
 
     @Override
     public void onApplicationEvent(EnvironmentChangeEvent event) {
+        log.info("[AFCONFIG] update spring @Value for keys: {}", event.getKeys());
         event.getKeys().forEach(key->{
             log.info("[AFCONFIG] update spring value: {}", key);
             List<SpringValue> springValues = VALUE_HOLDER.get(key);
@@ -64,7 +65,6 @@ public class SpringValueProcessor implements BeanPostProcessor, BeanFactoryAware
                 } catch (IllegalAccessException e) {
                     log.error("[AFCONFIG] update spring value error", e);
                 }
-
             });
         });
     }
