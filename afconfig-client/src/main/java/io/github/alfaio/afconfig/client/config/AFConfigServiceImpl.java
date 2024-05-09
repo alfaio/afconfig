@@ -1,6 +1,7 @@
 package io.github.alfaio.afconfig.client.config;
 
 import io.github.alfaio.afconfig.client.repository.AFRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.context.ApplicationContext;
 
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
  * @author LimMF
  * @since 2024/5/7
  **/
+@Slf4j
 public class AFConfigServiceImpl implements AFConfigService {
 
     ApplicationContext context;
@@ -36,11 +38,11 @@ public class AFConfigServiceImpl implements AFConfigService {
     public void onChange(AFRepository.ChangeEvent event) {
         Set<String> keys = calcChangeKeys(this.config, event.config());
         if (keys.isEmpty()) {
-            System.out.println("[AFCONFIG] not any change, ignore update.");
+            log.info("[AFCONFIG] not any change, ignore update.");
             return;
         }
         this.config = event.config();
-        System.out.println("[AFCONFIG] publish EnvironmentChangeEvent with keys: " + keys);
+        log.info("[AFCONFIG] publish EnvironmentChangeEvent with keys: " + keys);
         context.publishEvent(new EnvironmentChangeEvent(keys));
     }
 

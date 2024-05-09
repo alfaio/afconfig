@@ -3,6 +3,7 @@ package io.github.alfaio.afconfig.client.repository;
 import cn.kimmking.utils.HttpUtils;
 import com.alibaba.fastjson.TypeReference;
 import io.github.alfaio.afconfig.client.config.ConfigMeta;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @author LimMF
  * @since 2024/5/7
  **/
+@Slf4j
 public class AFRepositoryImpl implements AFRepository {
 
     ConfigMeta meta;
@@ -45,7 +47,7 @@ public class AFRepositoryImpl implements AFRepository {
 
     private Map<String, String> findAll() {
         String listPath = meta.listPath();
-        System.out.println("[AFCONFIG] list all configs from " + listPath);
+        log.info("[AFCONFIG] list all configs from {}", listPath);
         List<Config> configs = HttpUtils.httpGet(listPath, new TypeReference<List<Config>>() {
         });
         Map<String, String> resultMap = new HashMap<>();
@@ -61,8 +63,7 @@ public class AFRepositoryImpl implements AFRepository {
         String key = meta.genKey();
         Long oldVersion = versionMap.getOrDefault(key, -1L);
         if (version > oldVersion) {
-            System.out.println("[AFCONFIG] current = " + version + ", old = " + oldVersion);
-            System.out.println("[AFCONFIG] config changed");
+            log.info("[AFCONFIG] current = {}, old = {}", version, oldVersion);
             versionMap.put(key, version);
             Map<String, String> newConfigs = findAll();
             configMap.put(key, newConfigs);
