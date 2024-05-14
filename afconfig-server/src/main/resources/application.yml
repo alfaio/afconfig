@@ -5,14 +5,18 @@ spring:
   application:
     name: afconfig-server
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:config
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/afconfig?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: 123456
-  sql:
-    init:
-      schema-locations: classpath:/db.sql
-      mode:  always
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:config
+#    username: root
+#    password: 123456
+#  sql:
+#    init:
+#      schema-locations: classpath:/db.sql
+#      mode:  always
   h2:
     console:
       enabled: true

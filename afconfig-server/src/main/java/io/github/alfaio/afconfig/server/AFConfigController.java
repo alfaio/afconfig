@@ -20,6 +20,8 @@ public class AFConfigController {
 
     @Autowired
     ConfigMapper configMapper;
+    @Autowired
+    DistributedLocks distributedLocks;
 
     @RequestMapping("/list")
     public List<Config> list(String app, String env, String ns){
@@ -41,6 +43,11 @@ public class AFConfigController {
     @GetMapping("/version")
     public Long version(String app, String env, String ns) {
         return VERSION.getOrDefault(app + env + ns, -1L);
+    }
+
+    @GetMapping("/status")
+    public Boolean status() {
+        return distributedLocks.getLocked().get();
     }
 
     private void insertOrUpdate(Config config) {
